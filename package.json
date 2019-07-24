@@ -1,0 +1,35 @@
+{
+  "name": "@ia-cloud/node-red-contrib-ia-cloud-fds-raspberry-pi",
+  "description": "ia-cloud Node-RED nodes for Raspberry Pi",
+  "version": "0.0.1",
+  "author": "ia-cloud project menbers",
+  "access": "public",
+  "bugs": {
+    "url": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds-raspberry-pi/issues"
+  },
+  "dependencies": {
+    "dateformat": "^3.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^6.5.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2"
+  },
+  "keywords": [
+    "node-red"
+  ],
+  "license": "ISC",
+  "main": "gp2iac/gp2iac.js",
+  "node-red": {
+    "nodes": {
+      "gp2iac": "gp2iac/gp2iac.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ia-cloud/node-red-contrib-ia-cloud-fds-raspberry-pi.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
