@@ -46,7 +46,7 @@
         objectkeyはuniqueになるよう設定してください。
     </div>
     <div class="form-row">
-        <label for="node-input-dataname1">dataname1<br>(種類)</label>
+        <label for="node-input-dataname1">dataname1<br>(種別名)</label>
         <input type="text" id="node-input-dataname1" placeholder="dataname1">
     </div>
     <div class="form-row">
@@ -55,7 +55,7 @@
     </div>
     <br>
     <div class="form-row" id="div-dataname2">
-        <label for="node-input-dataname2">dataname2<br>(種類)</label>
+        <label for="node-input-dataname2">dataname2<br>(種別名)</label>
         <input type="text" id="node-input-dataname2" placeholder="dataname2">
     </div>
     <div class="form-row" id="div-unit2">
@@ -64,7 +64,7 @@
     </div>
     <br>
     <div class="form-row" id="div-dataname3">
-        <label for="node-input-dataname3">dataname3<br>(種類)</label>
+        <label for="node-input-dataname3">dataname3<br>(種別名)</label>
         <input type="text" id="node-input-dataname3" placeholder="dataname3">
     </div>
     <div class="form-row" id="div-unit3">
@@ -84,7 +84,7 @@
         color: 'rgb(231, 180, 100)',
         defaults: {
             name: {value:""},
-            board: {type:"board-config", required:true},
+            board: {type:"board-config-iac", required:true},
             sensor: {value:"temphum", required: true},
             repeat: {value: "1", required: true},
             pin: {value:"2", required: true},
@@ -178,8 +178,9 @@
 </script>
 <!-- End of Grove Pi Digital Sensor Node -->
 
+
 <script type="text/javascript">
-    RED.nodes.registerType('board-config',{
+    RED.nodes.registerType('board-config-iac',{
         category: 'config',
         defaults: {
             board: {value:"0", required:true}
@@ -190,9 +191,9 @@
     });
 </script>
 
-<script type="text/x-red" data-template-name="board-config">
+<script type="text/x-red" data-template-name="board-config-iac">
     <div class="form-row">
-        <label for="node-config-input-board"><i class="fa fa-cogs"></i> GrovePi Board</label>
+        <label for="node-config-input-board"><i class="fa fa-cogs"></i> GrovePi Board with ia-cloud</label>
         <select id="node-config-input-board">
             <option value="GrovePi">Connected GrovePi Board</option>
         </select>

@@ -161,7 +161,6 @@ module.exports = function(RED) {
       this.boardType = n.boardType;
       this.name = n.name;
     }
-    RED.nodes.registerType("board-config",GrovePiConfigNode);
-
+    RED.nodes.registerType("board-config-iac",GrovePiConfigNode);
 
 }
