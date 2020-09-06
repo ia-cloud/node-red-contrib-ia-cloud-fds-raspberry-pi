@@ -1,0 +1,62 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<script type="text/html" data-help-name="GPi-button-sensor">
+    <!-- ここにNode機能の概要を、50文字以内で記述-->
+    <p>GrovePiのボタンノード</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>GrovePiボード設定ノード<span class="property-type">設定ノード</span></dt>
+        <dd>GrovePiボードの設定ノード。</dd>
+        <dd>この設定ノードは複数あってはならない。全てのGroveーPiセンサノードから同一のGrovePiボードの設定ノードを使用すること。</dd>
+        <dt>GrovePi接続コネクタ<span class="property-type">選択</span></dt>
+        <dd>ボタンを接続したGrovePiボードのコネクタ番号。D2〜７</dd>
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>定期収集周期<span class="property-type">数値</span></dt>
+            <dd>ボタン押下データを定期的に収集する場合の周期（秒）</dd>
+            <dt>非同期収集<span class="property-type">チェック固定</span></dt>
+            <dd>ボタン押下データに変化のあった場合データを送出する</dd>
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>ボタン押下データのオブジェクトに付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>ボタン押下データオブジェクトのわかりやすい説明</dd>
+        </dl>
+        <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>データ名称<span class="property-type">文字列</span></dt>
+            <dd>ボタン押下データデータに付与する名称</dd>
+            <dt>出力形式<span class="property-type">選択</span></dt>
+            <dd>ia-cloudの設備運転状態データモデル</dd>
+            <dd>ia-cloudのアラーム＆イベントデータモデル/dd>
+            <dd>文字列"on"/"off"出力</dd>
+            <dd>論理　true/false 出力</dd>
+            <dd>データ 1/0 出力</dd>
+        </dl>
+    </dl>
+    <h3>入力メーッセージ</h3>
+        <p>入力されたmsg.payloadを評価し true の場合は、その時点でのボタン押下データを送出する。</p>
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+        <dt>request <span class="property-type">文字列（固定）</span></dt>
+        <dd>ia-cloudリクエスト内容。"store"固定</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject。contentDataの各データ項目は設定にしたがったセンサデータ項目。</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>GrovePiのボタンセンサのデータを取得し、ia-cloudオブジェクトを生成するノード</p>
+
+</script>

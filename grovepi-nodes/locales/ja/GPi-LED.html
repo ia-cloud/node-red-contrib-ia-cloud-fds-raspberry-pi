@@ -1,0 +1,38 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<script type="text/html" data-help-name="GPi-LED">
+    <!-- ここにNode機能の概要を、50文字以内で記述-->
+    <p>GrovePiのLEDノード</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>GrovePiボード設定ノード<span class="property-type">設定ノード</span></dt>
+        <dd>GrovePiボードの設定ノード。</dd>
+        <dd>この設定ノードは複数あってはならない。全てのGroveーPiセンサノードから同一のGrovePiボードの設定ノードを使用すること。</dd>
+        <dt>GrovePi接続コネクタ<span class="property-type">選択</span></dt>
+        <dd>LEDを接続したGrovePiボードのコネクタ番号。D2〜７</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+        <p>入力されたmsg.payloadを評価し、GrovePiの接続されたLEDを点灯もしくは消灯する。</p>
+        <p>payloadの値が、"off"、false、0、"reset"、"stop"のいずれでもない時、LEDを消灯する。</p>
+        <p>それ以外の時は、LEDを点灯する。</p>
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">文字列</span></dt>
+        <dd>LEDを転倒または消灯したメッセージ文字列と、入力メッセージを出力</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>入力されたメーッセージにしたがい、GrovePiのLEDを点灯または消灯する</p>
+
+</script>

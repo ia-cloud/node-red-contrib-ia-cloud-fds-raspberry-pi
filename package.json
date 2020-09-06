@@ -8,7 +8,9 @@
     "url": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds-raspberry-pi/issues"
   },
   "dependencies": {
-    "dateformat": "^3.0.3"
+    "dateformat": "^3.0.3",
+    "node-grovepi": "^2.2.2",
+    "moment": "^2.27.0"
   },
   "devDependencies": {
     "eslint": "^6.5.0",
@@ -22,7 +24,12 @@
   "main": "gp2iac/gp2iac.js",
   "node-red": {
     "nodes": {
-      "gp2iac": "gp2iac/gp2iac.js"
+      "gp2iac": "gp2iac/gp2iac.js",
+      "GPi-range-sensor": "grovepi-nodes/GPi-range-sensor.js",
+      "GPi-button-sensor": "grovepi-nodes/GPi-button-sensor.js",
+      "GPi-DHT-sensor": "grovepi-nodes/GPi-DHT-sensor.js",
+      "GPi-LED": "grovepi-nodes/GPi-LED.js",
+      "grovepi": "grovepi-nodes/grovepi.js"
     }
   },
   "repository": {

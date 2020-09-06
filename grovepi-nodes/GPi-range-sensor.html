@@ -1,0 +1,179 @@
+<!--
+    Copyright JS Foundation and other contributors, http://js.foundation
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.   
+-->
+
+<script type="text/html" data-template-name="GPi-range-sensor">
+
+    <!-- grovepi config node node -->
+    <div class="form-row">
+        <label for="node-input-grovepi" style="width:150px;">
+            <span data-i18n="editor.grovepi"></label>
+        <input type="text" style="width: 300px" id="node-input-grovepi">
+    </div>
+    <div class="form-row">
+        <label for="node-input-din" style="width:150px;">
+            <span data-i18n="editor.din"></span></label>
+        <select style="width: 80px" id="node-input-din">
+            <option selected="selected" value="2">D2</option>
+            <option value="3">D3</option>
+            <option value="4">D4</option>
+            <option value="5">D5</option>
+            <option value="6">D6</option>
+            <option value="7">D7</option>
+            <option value="8">D8</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-cycle"><span data-i18n="editor.cycle"></span></label>
+        <input type="number" id="node-input-cycle" min="0.1" max="10" step="0.1"
+            value="1.0" style="display: inline-block; width: 80px;">
+        <label style="width: 50px; margin-right: 20px;"><span data-i18n="editor.sec"></span></label>
+    </div>
+    <hr>
+    <!-- Tab, ownself -->
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="GPi-range-sensor-tabs">
+        </ul>
+    </div>
+
+    <!-- Tab contents -->
+    <div id="GPi-range-sensor-tabs-content" style="min-height:250px;">
+
+        <!-- tab1 starts for dataObject-->
+        <div id="tab-object-settings" style="display:none">
+            <!-- object propertyの設定 -->
+            <div class="form-group" style="margin-left: 20px; margin-top:8px";>
+                <div class="form-row">
+                    <label style="margin-right: 10px;" for="node-input-storeInterval"><span data-i18n="editor.period"></span></label>
+                    <input type="number" id="node-input-storeInterval" min="0" step="1"
+                        value="10" style="display: inline-block; width: 80px;">
+                    <label style="width: 50px; margin-right: 20px;"><span data-i18n="editor.sec"></span></label>
+                    <label for="node-input-storeAsync" ><span data-i18n="editor.async"></span></label>
+                    <input type="checkbox" id="node-input-storeAsync" checked="checked"
+                        style="display: inline-block; width: auto;" >
+                </div>
+                <div class="form-row">
+                    <label style="margin-right: 10px;"
+                        for="node-input-objectKey"><span data-i18n="editor.objectKey"></span></label>
+                    <input class="form-control" type="text" style="width: 300px"
+                    id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+                </div>
+                <div class="form-row">
+                    <label style="margin-right: 10px;"
+                        for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
+                    <input type="text" style="width: 300px" id="node-input-objectDescription">
+                </div>
+            </div>
+        </div>
+        <!-- tab-object-property ends -->
+
+        <!-- tab-dItem-property starts -->
+        <div id="tab-dataItem-settings">
+            <!-- data Item propertyの設定 -->
+            <div class="form-row">
+                <label style="margin-right: 10px;"
+                    for="node-input-dataName"><span data-i18n="editor.dataName"></span></label>
+                <input type="text" style="width: 300px"
+                id="node-input-dataName" data-i18n="[placeholder]editor.dataName">
+            </div>
+            <div class="form-row">
+                <label style="margin-right: 10px;"
+                    for="node-input-unit"><span data-i18n="editor.unit"></span></label>
+                <input type="text" style="width: 60px" id="node-input-unit">
+            </div>
+            <div class="form-row form-tips" id="tip-limit"><span data-i18n="editor.limitTip"></span></div>
+            <div class="form-row">
+                <label for="node-input-lLimit"><span data-i18n="editor.lLmit"></span></label>
+                <input type="number" id="node-input-lLimit" min="0"
+                    value="" style="display: inline-block; width: 80px;">
+                <label for="node-input-hLimit" style="margin-left: 20px;"><span data-i18n="editor.hLimit"></span></label>
+                <input type="number" id="node-input-hLimit" min="0"
+                    value="" style="display: inline-block; width: 80px;" >
+            </div>
+        </div>  
+        <!-- tab-dItem-property ends -->      
+    </div>
+    <!-- node name block -->
+    <div id="name-block">
+        <hr>
+        <div class="form-row">
+            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" id="node-input-name">
+        </div>
+    </div>
+
+</script>
+
+<script type="text/javascript">
+
+    var NodeConfig = {
+
+
+        category: 'iaCloud devices',
+        color: "rgb(231, 180, 100)",
+
+        defaults: {
+            // node properties
+            name: {value: ""},
+            grovepi: {value: "", type: "grovepi", required: true},
+            din: {value: "2"},
+            cycle: {value: 1, required: true},
+            // object properties
+            storeInterval: {value: 10},
+            storeAsync: {value: true},
+            objectKey: {value:"", required: true},
+            objectDescription: {value:""},
+            dataName: {value: "", required: true},
+            unit: {value: "cm"},
+            lLimit: {value: undefined},
+            hLimit: {value: undefined} 
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "ia-cloud.png",  //アイコンはTBD
+
+        label: function () {
+            return this.name||this._("editor.paletteLabel");
+        },
+        labelStyle: function () {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: function() {
+            return this._("editor.paletteLabel") || "Gpi-range"
+        },
+        oneditprepare: function () {
+            const node = this;
+
+            // Tab
+            const tabs = RED.tabs.create({
+                id: 'GPi-range-sensor-tabs',
+                onchange(tab) {
+                $('#GPi-range-sensor-tabs-content').children().hide();
+                $("#" + tab.id).show();
+                },
+            });
+            tabs.addTab({
+                id: 'tab-object-settings',
+                label: this._('editor.tab.object-settings'),
+            });
+            tabs.addTab({
+                id: 'tab-dataItem-settings',
+                label: this._('editor.tab.data-settings'),
+            });
+        },
+    }
+
+    // NodeをNode-REDへ登録
+    RED.nodes.registerType('GPi-range-sensor', NodeConfig);
+
+
+</script>

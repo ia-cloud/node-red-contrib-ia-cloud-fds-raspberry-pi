@@ -1,0 +1,30 @@
+{
+    "editor": {
+        "grovepi": "Grove-Piボード",
+        "din": "デジタル入力コネクタ",
+        "tab": {
+            "object-settings": "オブジェクトの設定",
+            "data-settings": "データ項目の設定"
+        },
+        "paletteLabel": "GrovePi距離センサ",
+        "cycle": "センサ周期",
+        "name": "ノード名称",
+        "objectKey": "オブジェクトキー",
+        "objectKeyholder": "固有のキー",
+        "objectDescription": "オブジェクトの説明",
+        "period": "定期収集周期",
+        "async": "非同期収集有り",
+        "sec": "秒",
+        "dataName": "データ名称",
+        "unit": "単位",
+        "lLmit": "下限値",
+        "hLimit": "上限値",
+        "limitTip": "測定値を上下限値で制限します。制限なしの場合は空欄のまま。"
+    },
+    "runtime": {
+        "value": "センサ値",
+        "waiting": "待機中",
+        "sent": "データ送出",
+        "error": "GrovePiが見つかりません"
+    }
+}
