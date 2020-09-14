@@ -25,7 +25,7 @@
   "node-red": {
     "nodes": {
       "gp2iac": "gp2iac/gp2iac.js",
-      "gp4iac": "gp4iac/gp2iac.js",
+      "gp4iac": "gp4iac/gp4iac.js",
       "GPi-range-sensor": "grovepi-nodes/GPi-range-sensor.js",
       "GPi-button-sensor": "grovepi-nodes/GPi-button-sensor.js",
       "GPi-DHT-sensor": "grovepi-nodes/GPi-DHT-sensor.js",
