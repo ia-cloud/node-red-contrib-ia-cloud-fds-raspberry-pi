@@ -1,7 +1,7 @@
 {
   "name": "@ia-cloud/node-red-contrib-ia-cloud-fds-raspberry-pi",
   "description": "ia-cloud Node-RED nodes for Raspberry Pi",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "author": "ia-cloud project menbers",
   "access": "public",
   "bugs": {
@@ -25,6 +25,7 @@
   "node-red": {
     "nodes": {
       "gp2iac": "gp2iac/gp2iac.js",
+      "gp4iac": "gp4iac/gp4iac.js",
       "GPi-range-sensor": "grovepi-nodes/GPi-range-sensor.js",
       "GPi-button-sensor": "grovepi-nodes/GPi-button-sensor.js",
       "GPi-DHT-sensor": "grovepi-nodes/GPi-DHT-sensor.js",
