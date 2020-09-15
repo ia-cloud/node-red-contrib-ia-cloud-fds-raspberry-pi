@@ -21,6 +21,7 @@ const DigitalIn = GrovePi.sensors.DigitalInput;
 
 const ON_VALUE = 1;
 const OFF_VALUE = 0;
+const CYCLE = 500;
 
 module.exports = function(RED) {
 
@@ -30,7 +31,8 @@ module.exports = function(RED) {
 
         const node = this;
         let button = OFF_VALUE;
-        let preres = OFF_VALUE;
+        let preButton = OFF_VALUE;
+        let value, preValue;
         let statusTxt = "";
         const PRESENT_VALUE_TEXT = RED._("runtime.value");
         const mode = config.mode;
@@ -39,10 +41,20 @@ module.exports = function(RED) {
 
         // if grovepi exists and initialized
         if (gpBoard.checkStatus()) {
- 
-            // make UltrasonicDigitalSensor instantiated
-            this.Button = new DigitalIn(parseInt(config.din));
 
+            // make UltrasonicDigitalSensor instantiated
+            let Button = new DigitalIn(parseInt(config.din));
+
+            this.intervalId = setInterval(function () {
+                let res = Button.read()
+                if (res === false) return;
+                preButton = button;
+                button = res;
+                if (preButton !== button) iaCloudObjectSend(button);
+            }, CYCLE)
+
+
+/*
             // set data change event listener
             this.Button.on('change', function (res) {
 
@@ -53,7 +65,8 @@ module.exports = function(RED) {
                 preres = res;
             });
             // start sennsor watch
-            this.Button.watch(300);
+            this.Button.watch(CYCLE);
+*/
         }
 
         const minCycle = 1; // 最小収集周期を10秒に設定
@@ -96,45 +109,44 @@ module.exports = function(RED) {
         });
 
         // ia-cloudオブジェクトを出力メッセージとして送出する関数
-        function iaCloudObjectSend (res) {
+        function iaCloudObjectSend (btn) {
             const moment = require("moment");
 
-            let value;
             let contentType;
             switch (mode) {
                 case "opStatus":
-                    if (res === ON_VALUE) value = "start";
-                    else if (res === OFF_VALUE) value = "stop";
-                    else value = (button === ON_VALUE)? "on": "off";
+                    if (btn === ON_VALUE) value = "start";
+                    else if (btn === OFF_VALUE) value = "stop";
+                    else value = (preValue === ON_VALUE)? "on": "off";
                     contentType = "iaClodEquipmentstatus";
                     break;
                 case "AnE":
-                    if (res === ON_VALUE) value = "set";
-                    else if (res === OFF_VALUE) value = "reset";
-                    else value = (button === ON_VALUE)? "on": "off";
+                    if (btn === ON_VALUE) value = "set";
+                    else if (btn === OFF_VALUE) value = "reset";
+                    else value = (preValue === ON_VALUE)? "on": "off";
                     contentType = "iacloudalarm&Event";
                     break;
                 case "onOff":
-                    if (res === ON_VALUE) value = "on";
-                    else if (res === OFF_VALUE) value = "off";
-                    else value = (button === ON_VALUE)? "on": "off";
+                    if (btn === ON_VALUE) value = "on";
+                    else if (btn === OFF_VALUE) value = "off";
+                    else value = (preValue === ON_VALUE)? "on": "off";
                     contentType = "iaCloudData";
                     break;
                 case "bool":
-                    if (res === ON_VALUE) value = true;
-                    else if (res === OFF_VALUE) value = false;
-                    else value = (button === ON_VALUE)? true: false;
+                    if (btn === ON_VALUE) value = true;
+                    else if (btn === OFF_VALUE) value = false;
+                    else value = (preValue === ON_VALUE)? true: false;
                     contentType = "iaCloudData";
                     break;
                 case "01":
-                    if (res === ON_VALUE) value = 1;
-                    else if (res === OFF_VALUE) value = 0;
-                    else value = (button === ON_VALUE)? 1: 0;
+                    if (btn === ON_VALUE) value = 1;
+                    else if (btn === OFF_VALUE) value = 0;
+                    else value = (preValue === ON_VALUE)? 1: 0;
                     contentType = "iaCloudData";
                     break;
                 default:
             }
-            if (res === ON_VALUE || res === OFF_VALUE) button = res;
+            if (btn === ON_VALUE || btn === OFF_VALUE) preValue = value;
 
             let msg = {request:"store", dataObject:{objectContent:{}}};
             let contentData = [{
@@ -156,7 +168,7 @@ module.exports = function(RED) {
             // make Node status to "sent"
             statusTxt = RED._("runtime.sent");
             node.status({fill:"green", shape:"dot",
-                text: PRESENT_VALUE_TEXT + button + ":" + statusTxt});
+                text: PRESENT_VALUE_TEXT + value + ":" + statusTxt});
         }
     };
 
