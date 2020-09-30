@@ -87,7 +87,7 @@ module.exports = function(RED) {
             // stop cyclic ia-cloud object stor
             clearInterval(this.intervalId)
             // just in case
-            setTimeout(done(), 300);
+            setTimeout(done, 300);
         });
 
 
