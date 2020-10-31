@@ -157,10 +157,9 @@
         oneditprepare: function () {
             const node = this;
 
-            // set default dataItem properties
-            if (!$("#node-input-tempDataName").val()) $("#node-input-tempDataName").val(node._("editor.temp"));
-            if (!$("#node-input-humDataName").val()) $("#node-input-humDataName").val(node._("editor.hum"));
-            if (!$("#node-input-hIndexDataName").val()) $("#node-input-hIndexDataName").val(node._("editor.hIndex"));
+            if ($("#node-input-tempDataName")) $("#node-input-tempDataName").val(node._("editor.temp"));
+            if ($("#node-input-humDataName")) $("#node-input-humDataName").val(node._("editor.hum"));
+            if ($("#node-input-hIndexDataName")) $("#node-input-hIndexDataName").val(node._("editor.hIndex"));
 
             // Tab
             const tabs = RED.tabs.create({
