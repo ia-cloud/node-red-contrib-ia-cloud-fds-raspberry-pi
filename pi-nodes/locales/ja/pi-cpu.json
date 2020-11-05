@@ -1,0 +1,27 @@
+{
+    "editor": {
+        "tab": {
+            "object-settings": "オブジェクトの設定",
+            "data-settings": "データ項目の設定"
+        },
+        "paletteLabel": "ラズパイCPU状態",
+        "name": "ノード名称",
+        "objectKey": "オブジェクトキー",
+        "objectKeyholder": "固有のキー",
+        "objectDescription": "オブジェクトの説明",
+        "period": "定期収集周期",
+        "async": "非同期収集有り",
+        "sec": "秒",
+        "CPUtemp": "CPU温度",
+        "CPUinUse": "CPU使用率",
+        "mem": "空きメモリ",
+        "dataName": "データ名称",
+        "unit": "単位"
+
+    },
+    "runtime": {
+        "value": "CPU温度",
+        "waiting": "待機中",
+        "sent": "データ送出"
+    }
+}

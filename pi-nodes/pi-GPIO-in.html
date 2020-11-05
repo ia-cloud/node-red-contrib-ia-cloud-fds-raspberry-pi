@@ -1,40 +1,14 @@
 
-<script type="text/html" data-template-name="GPi-DHT-sensor">
+<script type="text/html" data-template-name="pi-GPIO-in">
 
-    <!-- grovepi config node node -->
-    <div class="form-row">
-        <label for="node-input-grovepi" style="width:150px;">
-            <span data-i18n="editor.grovepi"></label>
-        <input type="text" style="width: 300px" id="node-input-grovepi">
-    </div>
-    <div class="form-row">
-        <label for="node-input-din" style="width:150px;">
-            <span data-i18n="editor.din"></span></label>
-        <select style="width: 80px" id="node-input-din">
-            <option value="2">D2</option>
-            <option value="3">D3</option>
-            <option selected="selected" value="4">D4</option>
-            <option value="5">D5</option>
-            <option value="6">D6</option>
-            <option value="7">D7</option>
-            <option value="8">D8</option>
-        </select>
-    </div>
-    <div class="form-row">
-        <label for="node-input-cycle"><span data-i18n="editor.cycle"></span></label>
-        <input type="number" id="node-input-cycle" min="3" max="60" step="1"
-            value="3" style="display: inline-block; width: 80px;">
-        <label style="width: 50px; margin-right: 20px;"><span data-i18n="editor.sec"></span></label>
-    </div>
-    <hr>
     <!-- Tab, ownself -->
     <div class="form-row">
-        <ul style="min-width: 500px; margin-bottom: 20px;" id="GPi-DHT-sensor-tabs">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="pi-GPIO-in-tabs">
         </ul>
     </div>
 
     <!-- Tab contents -->
-    <div id="GPi-DHT-sensor-tabs-content" style="min-height:250px;">
+    <div id="pi-GPIO-in-tabs-content" style="min-height:250px;">
 
         <!-- tab1 starts for dataObject-->
         <div id="tab-object-settings" style="display:none">
@@ -64,48 +38,21 @@
         </div>
         <!-- tab-object-property ends -->
 
-        <!-- tab-dItem-property starts -->
-        <div id="tab-dataItem-settings">
-            <!-- data Item propertyの設定 -->
+        <!-- tab-dataItem-properties starts-->
+        <div id="tab-dataItem-properties">
+            <!-- dataItemの設定 -->
             <div class="form-row">
-                <label style="margin-right: 10px;"><span data-i18n="editor.temp"></span></label>
-                <div class="form-row">
-                    <label style="margin-right: 10px;"
-                        for="node-input-tempDataName"><span data-i18n="editor.dataName"></span></label>
-                    <input type="text" style="width: 300px" data-i18n="[value]editor.temp"
-                        id="node-input-tempDataName">
-                </div>
-                <div class="form-row">
-                    <label style="margin-right: 10px;"
-                        for="node-input-tempUnit"><span data-i18n="editor.unit"></span></label>
-                    <input type="text" value = "°C" style="width: 60px" id="node-input-tempUnit">
-                </div>
+                <label for="node-input-contentType"><span data-i18n="editor.contentType"></span></label>
+                <input type="text" style="width: 300px" id="node-input-contentType">
             </div>
-            <div class="form-row">
-                <label style="margin-right: 10px;"><span data-i18n="editor.hum"></span></label>
-                <div class="form-row">
-                    <label style="margin-right: 10px;"
-                        for="node-input-humDataName"><span data-i18n="editor.dataName"></span></label>
-                    <input type="text" style="width: 300px" data-i18n="[value]editor.hum"
-                        id="node-input-humDataName">
-                </div>
-                <div class="form-row">
-                    <label style="margin-right: 10px;"
-                        for="node-input-humUnit"><span data-i18n="editor.unit"></span></label>
-                    <input type="text" value = "%" style="width: 60px" id="node-input-humUnit">
-                </div>
+
+            <div class="node-input-dItemcontainer-row">
+                <ol id="node-input-dItemcontainer">
+                </ol>
             </div>
-            <div class="form-row">
-                <label style="margin-right: 10px;"><span data-i18n="editor.hIndex"></span></label>
-                <div class="form-row">
-                    <label style="margin-right: 10px;"
-                        for="node-input-hIndexDataName"><span data-i18n="editor.dataName"></span></label>
-                    <input type="text" style="width: 300px" data-i18n="[value]editor.hIndex"
-                        id="node-input-hIndexDataName">
-                </div>
-            </div>                
-        </div>  
-        <!-- tab-dItem-property ends -->      
+        </div>
+        <!-- tab-dataItem-properties ends -->
+    
     </div>
     <!-- node name block -->
     <div id="name-block">
@@ -127,19 +74,17 @@
         defaults: {
             // node properties
             name: {value: ""},
-            grovepi: {value: "", type: "grovepi", required: true},
-            din: {value: "4"},
-            cycle: {value: 3, required: true},
+
             // object properties
             storeInterval: {value: 10},
             storeAsync: {value: true},
             objectKey: {value:"", required: true},
             objectDescription: {value:""},
-            tempDataName: {value:"", required: true},
-            tempUnit: {value: "°C"},
-            humDataName: {value:"", required: true},
-            humUnit: {value: "%"},
-            hIndexDataName: {value:"", required: true}
+            // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+            configReady: {value: "", required: true},
+
+            // dataItems property（editableListで使用する。）
+            dataItems : {value: [{},]},
         },
         inputs: 1,
         outputs: 1,
@@ -152,36 +97,153 @@
             return this.name?"node_label_italic":"";
         },
         paletteLabel: function() {
-            return this._("editor.paletteLabel") || "Gpi-DHT-sensor"
+            return this._("editor.paletteLabel") || "Rasppi-GPIO-in"
         },
-        oneditprepare: function () {
-            const node = this;
+        oneditprepare: function() {
+        let node = this;
 
-            if ($("#node-input-tempDataName")) $("#node-input-tempDataName").val(node._("editor.temp"));
-            if ($("#node-input-humDataName")) $("#node-input-humDataName").val(node._("editor.hum"));
-            if ($("#node-input-hIndexDataName")) $("#node-input-hIndexDataName").val(node._("editor.hIndex"));
+        const lbldName = node._("editor.dname");
+        const lblunit = node._("editor.unit");
+        const lblGPIO = node._("editor.GPIO");
 
-            // Tab
-            const tabs = RED.tabs.create({
-                id: 'GPi-DHT-sensor-tabs',
-                onchange(tab) {
-                $('#GPi-DHT-sensor-tabs-content').children().hide();
+
+        // editableList item のhtml要素
+        // 1行目のデータタイプとデータ名称
+        const paraForm1 =`
+            <label style="display:inline-block; width: 100px;">${lblGPIO}</label>
+            <input type="number" required="required" style="display:inline-block; width: 600px;"
+                class="GPIO" min="2" step="1" max="27" value=20>
+            <label style="display:inline-block; width: 100px;">${lbldName}</label>
+            <input type="text" required="required" style="display:inline-block; width: 150px;" class="dName">
+            <input type="text" style="display:inline-block; width: 40px;" placeholder="${lblunit}" class="unit">  
+        `;
+
+        // Tab
+        const tabs = RED.tabs.create({
+            id: 'red-tabs',
+            onchange(tab) {
+                $('#tabs-content').children().hide();
                 $("#" + tab.id).show();
-                },
-            });
-            tabs.addTab({
-                id: 'tab-object-settings',
-                label: this._('editor.tab.object-settings'),
-            });
-            tabs.addTab({
-                id: 'tab-dataItem-settings',
-                label: this._('editor.tab.data-settings'),
-            });
-        },
+                $("#red-tabs").resize();
+            },
+        });
+        tabs.addTab({
+            id: 'tab-object-properties',
+            label: this._('editor.tab.object-settings'),
+        });
+        tabs.addTab({
+            id: 'tab-dataItem-properties',
+            label: this._('editor.tab.data-settings'),
+        });
+
+        $('#node-input-dItemcontainer').css('min-height', '150px').css('min-width', '450px').editableList({
+            removable: true,
+            sortable: true,
+            height: 500,
+
+            // Process when click add button.
+            addItem: function(container, index, dItem) {
+                let div1 = $('<div></div>').appendTo(container);
+
+                $('<span></span>',{class:"index", 
+                    style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+                    .text((index + 1) + " :")
+                    .appendTo(div1);
+                $(paraForm1).appendTo(div1);
+
+                // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
+                if(!dItem.hasOwnProperty("dataName")) {
+                    dItem.dataName = "";
+                    dItem.GPIO = 20,
+                    dItem.unit = ""
+                }
+
+                // set back dataItem properties on row1
+                div1.find(".GPIO").val(dItem.GPIO);
+                div1.find(".dName").val(dItem.dataName);
+                div1.find(".unit").val(dItem.unit);
+            },
+            // リストの順番が変わったら呼ばれる。
+            sortItems: function(items) {
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            },
+            // リストの項目が削除されたら呼ばれる。
+            removeItem: function(dItem){
+                let items = $('#node-input-dItemcontainer').editableList("items");
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            }
+        });
+
+        // Nodeの設定パラメータを取り出し、editableListに登録
+        for (let i=0; i<node.dataItems.length; i++) {
+            $("#node-input-dItemcontainer").editableList('addItem',node.dataItems[i]);
+        }  
+
+    },
+
+    oneditsave: function() {
+        let node = this;
+        let configReady = "ready";
+        let items = $("#node-input-dItemcontainer").editableList('items');
+        // データ設定を作成
+        node.dataItems = [];
+
+        items.each(function(i, elm){
+            let item = {
+                item: elm.find(".dataSelect").val(),
+                dataName: elm.find(".dName").val(),
+                unit: elm.find(".unit").val()
+            };
+            // 必須propertyが揃っているか？
+            if (!item.dataName) configReady = "";
+
+            // dataItemをプロパティリストにプッシュ
+            node.dataItems.push(item);
+        });
+        // objectKeyはある？
+        if (!$("#node-input-objectKey").val()) configReady = "";
+         // contentTypeはある？
+         if (!$("#node-input-contentType").val()) configReady = "";
+        // データ設定が一つはある？
+        if (!node.dataItems[0]) configReady = "";
+        // 設定完了フラグをセット
+        $("#node-input-configReady").val(configReady);
+    },
+
+    oneditresize: function (size) {
+        if ($("#tab-dataItem-properties").is(":visible")) {
+            // エディタがリサイズされたら
+            let height = size.height;
+
+            // Tab以外の部分の高さを引く
+            height -= $("#com-block").outerHeight(true);
+            height -= $("#name-block").outerHeight(true);
+            // dataItemプロパティTab内の、editableList以外の行の高さを引く
+            let rows = $("#tab-dataItem-properties>div:not(.node-input-dItemcontainer-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // タブの部分の高さ（大体）
+            height -= 80;
+
+            // editableListのマージンを引く
+            const editorRow = $("#tab-dataItem-properties>div.node-input-dItemcontainer-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-dItemcontainer").editableList('height',height);
+        }
+    }
     }
 
     // NodeをNode-REDへ登録
-    RED.nodes.registerType('GPi-DHT-sensor', NodeConfig);
+    RED.nodes.registerType('pi-GPIO-in', NodeConfig);
 
 
 </script>

@@ -1,0 +1,167 @@
+
+<script type="text/html" data-template-name="pi-cpu">
+
+    <!-- Tab, ownself -->
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="pi-cpu-tabs">
+        </ul>
+    </div>
+
+    <!-- Tab contents -->
+    <div id="pi-cpu-tabs-content" style="min-height:250px;">
+
+        <!-- tab1 starts for dataObject-->
+        <div id="tab-object-settings" style="display:none">
+            <!-- object propertyの設定 -->
+            <div class="form-group" style="margin-left: 20px; margin-top:8px";>
+                <div class="form-row">
+                    <label style="margin-right: 10px;" for="node-input-storeInterval"><span data-i18n="editor.period"></span></label>
+                    <input type="number" id="node-input-storeInterval" min="0" step="1"
+                        value="10" style="display: inline-block; width: 80px;">
+                    <label style="width: 50px; margin-right: 20px;"><span data-i18n="editor.sec"></span></label>
+                    <label for="node-input-storeAsync" ><span data-i18n="editor.async"></span></label>
+                    <input type="checkbox" id="node-input-storeAsync" checked="checked"
+                        style="display: inline-block; width: auto;" >
+                </div>
+                <div class="form-row">
+                    <label style="margin-right: 10px;"
+                        for="node-input-objectKey"><span data-i18n="editor.objectKey"></span></label>
+                    <input class="form-control" type="text" style="width: 300px"
+                    id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+                </div>
+                <div class="form-row">
+                    <label style="margin-right: 10px;"
+                        for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
+                    <input type="text" style="width: 300px" id="node-input-objectDescription">
+                </div>
+            </div>
+        </div>
+        <!-- tab-object-property ends -->
+
+        <!-- tab-dItem-property starts -->
+        <div id="tab-dataItem-settings">
+            <!-- data Item propertyの設定 -->
+            <div class="form-row">
+                <label style="margin-right: 10px;"><span data-i18n="editor.CPUtemp"></span></label>
+                <div class="form-row">
+                    <label style="margin-right: 10px;"
+                        for="node-input-CPUtempDataName"><span data-i18n="editor.dataName"></span></label>
+                    <input type="text" style="width: 300px" data-i18n="[value]editor.CPUtemp"
+                        id="node-input-CPUtempDataName">
+                </div>
+                <div class="form-row">
+                    <label style="margin-right: 10px;"
+                        for="node-input-tempUnit"><span data-i18n="editor.unit"></span></label>
+                    <input type="text" value = "°C" style="width: 60px" id="node-input-tempUnit">
+                </div>
+            </div>
+            <div class="form-row">
+                <label style="margin-right: 10px;"><span data-i18n="editor.CPUinUse"></span></label>
+                <div class="form-row">
+                    <label style="margin-right: 10px;"
+                        for="node-input-CPUinUseDataName"><span data-i18n="editor.dataName"></span></label>
+                    <input type="text" style="width: 300px" data-i18n="[value]editor.CPUinUse"
+                        id="node-input-CPUinUseDataName">
+                </div>
+                <div class="form-row">
+                    <label style="margin-right: 10px;"
+                        for="node-input-CPUinUseUnit"><span data-i18n="editor.unit"></span></label>
+                    <input type="text" value = "%" style="width: 60px" id="node-input-CPUinUseUnit">
+                </div>
+            </div>
+            <div class="form-row">
+                <label style="margin-right: 10px;"><span data-i18n="editor.mem"></span></label>
+                <div class="form-row">
+                    <label style="margin-right: 10px;"
+                        for="node-input-memDataName"><span data-i18n="editor.dataName"></span></label>
+                    <input type="text" style="width: 300px" data-i18n="[value]editor.mem"
+                        id="node-input-memDataName">
+                </div>
+                <div class="form-row">
+                    <label style="margin-right: 10px;"
+                        for="node-input-memUnit"><span data-i18n="editor.unit"></span></label>
+                    <input type="text" value = "%" style="width: 60px" id="node-input-memUnit">
+                </div>
+            </div>                
+        </div>  
+        <!-- tab-dItem-property ends -->      
+    </div>
+    <!-- node name block -->
+    <div id="name-block">
+        <hr>
+        <div class="form-row">
+            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" id="node-input-name">
+        </div>
+    </div>
+
+</script>
+
+<script type="text/javascript">
+
+    var NodeConfig = {
+        category: 'iaCloud devices',
+        color: "rgb(231, 180, 100)",
+
+        defaults: {
+            // node properties
+            name: {value: ""},
+
+            // object properties
+            storeInterval: {value: 10},
+            storeAsync: {value: true},
+            objectKey: {value:"", required: true},
+            objectDescription: {value:""},
+            // dataItem properties
+            CPUtempDataName: {required: true},
+            CPUtempUnit: {value: "°C"},
+            CPUinUseDataName: {required: true},
+            CPUinUseUnit: {value: "%"},
+            memDataName: {required: true},
+            memUnit: {value: "MB"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "ia-cloud.png",  //アイコンはTBD
+
+        label: function () {
+            return this.name||this._("editor.paletteLabel");
+        },
+        labelStyle: function () {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: function() {
+            return this._("editor.paletteLabel") || "RaspPi-CPU"
+        },
+        oneditprepare: function () {
+            const node = this;
+
+            // set default dataItem properties
+            if (!$("#node-input-CPUtempDataName").val()) $("#node-input-CPUtempDataName").val(node._("editor.CPUtemp"));
+            if (!$("#node-input-CPUinUseDataName").val()) $("#node-input-CPUinUseDataName").val(node._("editor.CPUinUse"));
+            if (!$("#node-input-memDataName").val()) $("#node-input-memDataName").val(node._("editor.mem"));
+
+            // Tab
+            const tabs = RED.tabs.create({
+                id: 'pi-cpu-tabs',
+                onchange(tab) {
+                $('#pi-cpu-tabs-content').children().hide();
+                $("#" + tab.id).show();
+                },
+            });
+            tabs.addTab({
+                id: 'tab-object-settings',
+                label: this._('editor.tab.object-settings'),
+            });
+            tabs.addTab({
+                id: 'tab-dataItem-settings',
+                label: this._('editor.tab.data-settings'),
+            });
+        },
+    }
+
+    // NodeをNode-REDへ登録
+    RED.nodes.registerType('pi-cpu', NodeConfig);
+
+
+</script>

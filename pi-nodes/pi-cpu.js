@@ -1,14 +1,14 @@
 
 "use strict";
 
-const gpiop = require('rpi-gpio').promise;
+const { exec } = require('child_process');
 const INTERVAL = 10 * 1000;
 const MINCYCLE = 1;
 
 module.exports = function(RED) {
 
 
-    function piGPIOin(config) {
+    function piCpu(config) {
 
         RED.nodes.createNode(this, config);
 
@@ -19,16 +19,34 @@ module.exports = function(RED) {
         let preValue = {};
         const PRESENT_VALUE_TEXT = RED._("runtime.value");
 
-        // set GPIO pin mode
-        gpio.setMode(gpio.MODE_BCM);
-            
-        gpio.on("change", function (channel, value) {
+        // if grovepi exists and initialized
+        if (INTERVAL) {
+ 
+            this.watchId = setInterval(function () {
 
-        });
-        // set GPIO pins up
-        for (let dataItem in config.dataItems) 
-            gpio.setup(dataItem.gpio, gpio.DIR_IN, gpio.EDGE_BOTH);
+                exec("cat /sys/class/thermal/thermal_zone0/temp", (err,stdout, stderr) => {
+                    preValue.CPUtemp = value.CPUtemp;
+                    value.CPUtemp = parseInt(stdout) / 1000;
+                });
+                exec("vmstat | tail -1 | awk '{print $15}'", (err,stdout, stderr) => {
+                    preValue.CPUinUse = value.CPUinUse;
+                    value.CPUinUse = 100 - parseInt(stdout);
+                });
+                exec("vmstat | tail -1 | awk '{print $4}'", (err,stdout, stderr) => {
+                    preValue.mem = value.mem;
+                    value.mem = parseInt(stdout) / 1000;
+                });
+                if (config.storeAsync) {
+                    if (preValue.CPUtemp !== value.CPUtemp 
+                        || preValue.CPUinUse !== value.CPUinUse
+                        || preValue.mem !== value.mem) {
+                            iaCloudObjectSend();       
+                    }
+                }
 
+            }, INTERVAL);
+   
+        }
     
         // 定期収集のためのカウンターをセット
         let storeInterval = parseInt(config.storeInterval);
@@ -107,5 +125,5 @@ module.exports = function(RED) {
         }
     };
 
-    RED.nodes.registerType("pi-GPIO-in",piGPIOin);
+    RED.nodes.registerType("pi-cpu",piCpu);
 }
