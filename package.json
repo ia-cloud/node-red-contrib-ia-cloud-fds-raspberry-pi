@@ -8,8 +8,8 @@
     "url": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds-raspberry-pi/issues"
   },
   "dependencies": {
+    "@ia-cloud/node-grovepi": "^2.2.1",
     "dateformat": "^3.0.3",
-    "node-grovepi": "^2.2.2",
     "moment": "^2.27.0"
   },
   "devDependencies": {

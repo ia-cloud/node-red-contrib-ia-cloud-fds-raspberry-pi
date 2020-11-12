@@ -19,7 +19,7 @@
 // import GrovePi implementation from DexterIndustries
 var GrovePi = require('node-grovepi').GrovePi;
 var i2c = require('i2c-bus');
-var sleep = require('sleep');
+// var sleep = require('sleep');
 
 // Statics
 var STATE_UNINITIALISED = 0;
@@ -27,6 +27,15 @@ var STATE_INITIALISED   = 1;
 
 var DISPLAY_RGB_ADDR = 0x62;
 var DISPLAY_TEXT_ADDR = 0x3e;
+
+// Alternative for module "sleep"
+function msleep(n) {
+	Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
+}
+function sleep(n) {
+	msleep(n*1000);
+}
+
 
 // local Functions
 function setRGB(i2c1, r, g, b) {
@@ -44,10 +53,12 @@ function textCommand(i2c1, cmd) {
 
 function setText(i2c1, text) {
 	textCommand(i2c1, 0x01) // clear display
-	sleep.usleep(50000);
+	// call sleep function insread of sleep modelue
+	msleep(50);
 	textCommand(i2c1, 0x08 | 0x04) // display on, no cursor
 	textCommand(i2c1, 0x28) // 2 lines
-	sleep.usleep(50000);
+	// call sleep function insread of sleep modelue
+	msleep(50);
 	var count = 0;
 	var row = 0;
 	for(var i = 0, len = text.length; i < len; i++) {
