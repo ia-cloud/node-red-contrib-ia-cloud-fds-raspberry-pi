@@ -9,8 +9,11 @@
   },
   "dependencies": {
     "dateformat": "^3.0.3",
-    "node-grovepi": "^2.2.2",
-    "moment": "^2.27.0"
+    "moment": "^2.27.0",
+    "async": "1.*",
+    "i2c-bus": "5.*",
+    "npmlog": "2.*",
+    "mathjs": "3.17.*"
   },
   "devDependencies": {
     "eslint": "^6.5.0",

@@ -1,7 +1,7 @@
 
 "use strict";
 
-const GrovePi = require('node-grovepi').GrovePi;
+const GrovePi = require('../util/node-grovepi/index.js').GrovePi;
 const UltrasonicDigitalSensor = GrovePi.sensors.UltrasonicDigital;
 
 module.exports = function(RED) {
