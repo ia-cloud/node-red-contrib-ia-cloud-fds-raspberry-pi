@@ -1,7 +1,7 @@
 
 "use strict";
 
-const GrovePi = require('node-grovepi').GrovePi;
+const GrovePi = require('@ia-cloud/node-grovepi').GrovePi;
 const DigitalIn = GrovePi.sensors.DigitalInput;
 
 const ON_VALUE = 1;

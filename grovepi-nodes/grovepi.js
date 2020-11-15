@@ -1,7 +1,7 @@
 
 "use strict";
 
-const GrovePi = require('node-grovepi').GrovePi
+const GrovePi = require('@ia-cloud/node-grovepi').GrovePi
 const Board = GrovePi.board
 
 module.exports = function(RED) {

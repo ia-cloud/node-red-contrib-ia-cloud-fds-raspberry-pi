@@ -17,7 +17,7 @@
  **/
 
 // import GrovePi implementation from DexterIndustries
-var GrovePi = require('node-grovepi').GrovePi;
+var GrovePi = require('@ia-cloud/node-grovepi').GrovePi;
 var i2c = require('i2c-bus');
 // var sleep = require('sleep');
 
