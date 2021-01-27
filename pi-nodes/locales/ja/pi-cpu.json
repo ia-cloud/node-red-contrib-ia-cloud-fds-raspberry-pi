@@ -4,7 +4,7 @@
             "object-settings": "オブジェクトの設定",
             "data-settings": "データ項目の設定"
         },
-        "paletteLabel": "ラズパイCPU状態",
+        "paletteLabel": "Rpi CPU状態",
         "name": "ノード名称",
         "objectKey": "オブジェクトキー",
         "objectKeyholder": "固有のキー",

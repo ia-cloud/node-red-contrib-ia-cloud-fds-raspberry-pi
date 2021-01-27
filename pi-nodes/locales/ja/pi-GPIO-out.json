@@ -1,0 +1,14 @@
+{
+    "editor": {
+        "paletteLabel": "Rpi GPIO出力",
+        "name": "ノード名称",
+        "GPIONum": "GPIO番号",
+        "notHeaderpin": "コネクタPin番号ではありません。"
+    },
+    "runtime": {
+        "input": "入力",
+        "on": "ON出力",
+        "off": "OFF出力",
+        "error": "GPIOエラー"
+    }
+}

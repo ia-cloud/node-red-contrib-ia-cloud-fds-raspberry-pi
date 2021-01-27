@@ -1,0 +1,23 @@
+
+<script type="text/html" data-help-name="pi-GPIO-out">
+       <!-- ここにNode機能の概要を、50文字以内で記述-->
+       <p>RaspberryPiのGPIOデータ出力Node</p>
+
+       <h3>プロパティ項目</h3>
+       <dl class="message-properties">
+            <dt>GPIO番号<span class="property-type">数値</span></dt>
+            <dd>データを出力するGPIOno番号。ヘッダピンコネクターのピン番号ではない。</dd>
+            <dd>信号配置図に「GPIO7」などと記されている番号。ラズパイ機種によって付番が異なるので注意のこと。</dd>
+            <dt>名前<span class="property-type">文字列</span></dt>
+            <dd>個別のNodeに付与する名前</dd>
+       </dl>
+       <h3>入力メーッセージ</h3>
+            <p>入力されたmsg.payloadを評価し、GrovePiの接続されたLEDを点灯もしくは消灯する。</p>
+            <p>payloadの値が、"off"、false、0、"reset"、"stop"のいずれでもない時、LEDを消灯する。</p>
+            <p>それ以外の時は、LEDを点灯する。</p>
+       <h3>出力メッセージ</h3>
+           <dt>payload <span class="property-type">string</span></dt>
+           <dd>入力メッセージと、GPIOの出力状態を表す文字列</dd>   
+       <h3>詳細説明</h3>
+       <p>入力メッセージを評価し、RaspberryPiのGPIOデジタル出力を制御するノード</p>
+</script>

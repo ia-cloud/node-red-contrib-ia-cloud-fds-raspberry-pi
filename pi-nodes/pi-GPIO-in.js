@@ -1,41 +1,59 @@
 
 "use strict";
 
-const gpiop = require('rpi-gpio').promise;
+const gpio = require('rpi-gpio');
 const INTERVAL = 10 * 1000;
 const MINCYCLE = 1;
+const NUM_OF_GPIO_PIN = 44;
 
 module.exports = function(RED) {
 
 
-    function piGPIOin(config) {
+    function piGPIOin (config) {
 
         RED.nodes.createNode(this, config);
 
         const node = this;
+        const params = config.dataItems;
+        const mode = config.mode;
+        let GPIOValue = [];
+        GPIOValue.length = NUM_OF_GPIO_PIN;
 
-        let statusTxt = "";
-        let value = {};
-        let preValue = {};
         const PRESENT_VALUE_TEXT = RED._("runtime.value");
+        const ERROR_TEXT = RED._("runtime.error");
+        const SENT_TEXT = RED._("runtime.sent");
+        const WAITING_TEXT = RED._("runtime.waiting");
 
         // set GPIO pin mode
         gpio.setMode(gpio.MODE_BCM);
             
         gpio.on("change", function (channel, value) {
 
+            let param = params.find(param => {return param.gpioNum == channel});
+            if (param) {
+                if (value && !GPIOValue[channel]) iaCloudObjectSend(param, "raised");
+                else  if (!value && GPIOValue[channel]) iaCloudObjectSend(param, "falled");
+            }
+            GPIOValue[channel] = value;
         });
         // set GPIO pins up
-        for (let dataItem in config.dataItems) 
-            gpio.setup(dataItem.gpio, gpio.DIR_IN, gpio.EDGE_BOTH);
+        let error = false;
+        for (let param of params) {
 
+            gpio.setup(param.gpioNum, gpio.DIR_IN, gpio.EDGE_BOTH, function (err){
+                gpio.read(param.gpioNum, function (err, value){
+                    if (!err) GPIOValue[param.gpioNum] = value;
+                    else error = true;
+                });
+            });
+        }
+
+        if (!error) node.status({fill:"green", shape:"dot", text:WAITING_TEXT});
+        else node.status({fill:"yellow", shape:"ring", text:ERROR_TEXT});
     
         // 定期収集のためのカウンターをセット
         let storeInterval = parseInt(config.storeInterval);
         let timeCount = storeInterval;
-
-        // Nodeステータスを　Readyに
-        statusTxt = RED._("runtime.waiting");
 
         if (storeInterval !== 0) {
             this.intervalId = setInterval(function(){
@@ -69,43 +87,69 @@ module.exports = function(RED) {
         });
 
         // ia-cloudオブジェクトを出力メッセージとして送出する関数
-        function iaCloudObjectSend () {
+        function iaCloudObjectSend (param, edge) {
             const moment = require("moment");
+            let msg = {};
+            let dataItems = []; 
+            let dataItem = {};
+            let value;
 
-            if (!value) return;
-            let msg = {request:"store", dataObject:{objectContent:{}}};
-            let contentData = [
-                {
-                    dataName: config.CPUtempDataName,
-                    dataValue: value.CPUtemp,
-                    unit: config.CPUtempUnit
-                },{
-                    dataName: config.CPUinUseDataName,
-                    dataValue: value.CPUinUse,
-                    unit: config.CPUinUseUnit
-                },{
-                    dataName: config.memDataName,
-                    dataValue: value.mem,
-                    unit: config.memUnit
+            if (!param) {
+                for (let i = 0; i < params.length; i++) {
+                    value = GPIOValue[params[i].gpioNum];
+                    if (value) {
+                        if (mode === "opStatus" || mode === "AnE" || mode === "onOff") value = "on";
+                        else if (mode === "01") value = 1;
+                    } else {
+                        if (mode === "opStatus" || mode === "AnE" || mode === "onOff") value = "off";
+                        else if (mode === "01") value = 0;
+                    }
+                    dataItem = {
+                        dataName: params[i].dataName,
+                        dataValue: value
+                    }
+                    dataItems.push(dataItem);
                 }
-            ];
+            } else {
+                dataItems = [{dataName: param.dataName}];
+                let value;
+                if (edge === "raised") {
+                    if (mode === "opStatus") value = "start";
+                    else if (mode === "AnE") value = "set";
+                    else if (mode === "onOff") value = "on";
+                    else if (mode === "bool") value = true;
+                    else if (mode === "01") value = 1;
+                }
+                else if (edge === "falled") {
+                    if (mode === "opStatus") value = "stop";
+                    else if (mode === "AnE") value = "reset";
+                    else if (mode === "onOff") value = "off";
+                    else if (mode === "bool") value = false;
+                    else if (mode === "01") value = 0;
+                }
+                dataItems[0].dataValue = value;
+            }
+
+            msg.request = "store";
+
+            msg.dataObject = {};
             msg.dataObject.objectKey = config.objectKey;
             msg.dataObject.timestamp = moment().format();
             msg.dataObject.objectType = "iaCloudObject";
             msg.dataObject.objectDescription = config.objectDescription;
-            msg.dataObject.objectContent.contentType = "iaCloudData";
 
-            msg.dataObject.objectContent.contentData = contentData;
+            msg.dataObject.objectContent = {};
+            msg.dataObject.objectContent.contentType = "iaCloudData";
+            msg.dataObject.objectContent.contentData = dataItems;
             // set contentData[] to msg.payload
-            msg.payload = contentData;
+            msg.payload = dataItems;
             // Send output message to the next Nodes
             node.send(msg);
             // make Node status to "sent"
-            statusTxt = RED._("runtime.sent");
             node.status({fill:"green", shape:"dot",
-                text: PRESENT_VALUE_TEXT + value.CPUtemp + ":" + statusTxt});
+                text: SENT_TEXT + dataItems[0].dataValue + "..." });
         }
     };
 
-    RED.nodes.registerType("pi-GPIO-in",piGPIOin);
+    RED.nodes.registerType("pi-GPIO-in", piGPIOin);
 }

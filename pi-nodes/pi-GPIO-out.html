@@ -1,0 +1,52 @@
+
+<script type="text/html" data-template-name="pi-GPIO-out">
+
+    <!-- grovepi config node node -->
+    <div class="form-row">
+        <label for="node-input-gpioNum" style="width:80px;"><span data-i18n="editor.GPIONum"></span></label>
+        <input id="node-input-gpioNum" type="number" min="2" step="1" max="27" required="required"
+            style="display:inline-block; text-align:right; width: 60px; margin-right:20px;">
+        <div class="form-row form-tips" style="display:inline-block;"><span data-i18n="editor.notHeaderpin"></span></div>
+    </div>
+    <hr>
+    <hr>
+    <div id="name-block">
+        <div class="form-row">
+            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" id="node-input-name">
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+
+    var NodeConfig = {
+
+        category: 'iaCloud devices',
+        color: "rgb(231, 180, 100)",
+
+        defaults: {
+            // node properties
+            name: {value: ""},
+            gpioNum: {value: undefined, required: true},
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "ia-cloud.png",  //アイコンはTBD
+
+        label: function () {
+            return this.name||this._("editor.paletteLabel");
+        },
+        labelStyle: function () {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: function() {
+            return this._("editor.paletteLabel") || "GPIO-out"
+        },
+    }
+
+    // NodeをNode-REDへ登録
+    RED.nodes.registerType('pi-GPIO-out', NodeConfig);
+
+
+</script>

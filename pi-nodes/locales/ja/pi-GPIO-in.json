@@ -4,7 +4,7 @@
             "object-settings": "オブジェクトの設定",
             "data-settings": "データ項目の設定"
         },
-        "paletteLabel": "ラズパイGPIO入力",
+        "paletteLabel": "Rpi GPIO入力",
         "name": "ノード名称",
         "objectKey": "オブジェクトキー",
         "objectKeyholder": "固有のキー",
@@ -12,13 +12,22 @@
         "period": "定期収集周期",
         "async": "非同期収集有り",
         "sec": "秒",
+        "mode": "出力形式",
+        "opStatus": "設備稼働情報", 
+        "AnE": "アラーム＆イベント",
+        "onOff": "文字列:on/off",
+        "bool": "論理:true/false",
+        "01": "数値:1/0",
+        "notHeaderpin": "コネクタPin番号でなく、GPIO番号を設定してください。",
+        "GPIO-pin": "GPIO番号",
         "dataName": "データ名称",
         "unit": "単位"
 
     },
     "runtime": {
-        "value": "GPIO",
+        "value": "GPIO入力",
         "waiting": "待機中",
+        "error": "GPIOエラー",
         "sent": "データ送出"
     }
 }

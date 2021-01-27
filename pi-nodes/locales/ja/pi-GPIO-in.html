@@ -16,14 +16,26 @@
                <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
                <dd>RaspberryPiのGPIO入力データオブジェクトに付ける説明</dd>
            </dl>
+
            <dt>データ項目の設定<span class="property-type">タブ</span></dt>
-           <dd>RaspberryPiのGPIO入力データのそれぞれに付与するデータ名称と単位</dd>
+            <dd>RaspberryPiのGPIO入力データの出力形式と、それぞれに付与するデータ名称と単位</dd>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>出力形式<span class="property-type">選択</span></dt>
+                <dd>GPIOの入力状態の出力形式を以下の選択肢から選択します。</dd>
+                <dd>- ia-cloudの設備運転状態データモデル</dd>
+                <dd>- ia-cloudのアラーム＆イベントデータモデル</dd>
+                <dd>- 文字列:"on"/"off"出力</dd>
+                <dd>- 論理:true/false 出力</dd>
+                <dd>- 数値:1/0 出力</dd>
+            </dl>
            <dl class="message-properties" style="margin-left: 8px">
                <dt>データ名称<span class="property-type">文字列</span></dt>
                <dd>各データに付与する名称</dd>
                <dt>単位<span class="property-type">文字列</span></dt>
                <dd>データに付与する単位。</dd>
            </dl>
+           <dt>名前<span class="property-type">文字列</span></dt>
+           <dd>個別のNodeに付与する名前</dd>
        </dl>
        <h3>入力メーッセージ</h3>
            <p>入力されたmsg.payloadを評価し true の場合は、その時点でのRaspberryPiのGPIO入力データを送出する。</p>

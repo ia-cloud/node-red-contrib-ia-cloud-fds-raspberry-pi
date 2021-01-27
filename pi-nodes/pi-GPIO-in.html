@@ -13,7 +13,7 @@
         <!-- tab1 starts for dataObject-->
         <div id="tab-object-settings" style="display:none">
             <!-- object propertyの設定 -->
-            <div class="form-group" style="margin-left: 20px; margin-top:8px";>
+            <div class="form-group" style="margin-left: 20px; margin-top:8px;">
                 <div class="form-row">
                     <label style="margin-right: 10px;" for="node-input-storeInterval"><span data-i18n="editor.period"></span></label>
                     <input type="number" id="node-input-storeInterval" min="0" step="1"
@@ -39,13 +39,19 @@
         <!-- tab-object-property ends -->
 
         <!-- tab-dataItem-properties starts-->
-        <div id="tab-dataItem-properties">
+        <div id="tab-dataItem-settings">
             <!-- dataItemの設定 -->
             <div class="form-row">
-                <label for="node-input-contentType"><span data-i18n="editor.contentType"></span></label>
-                <input type="text" style="width: 300px" id="node-input-contentType">
+                <label for="node-input-mode"><span data-i18n="editor.mode"></span></label>
+                <select style="width: 180px" id="node-input-mode">
+                    <option selected="selected" value="opStatus" data-i18n="[text]editor.opStatus"></option>
+                    <option value="AnE" data-i18n="[text]editor.AnE"></option>
+                    <option value="onOff" data-i18n="[text]editor.onOff"></option>
+                    <option value="bool" data-i18n="[text]editor.bool"></option>
+                    <option value="01" data-i18n="[text]editor.01"></option>
+                </select>
             </div>
-
+            <div class="form-row form-tips" style="display:inline-block;"><span data-i18n="editor.notHeaderpin"></span></div>
             <div class="node-input-dItemcontainer-row">
                 <ol id="node-input-dItemcontainer">
                 </ol>
@@ -61,6 +67,8 @@
             <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
             <input type="text" id="node-input-name">
         </div>
+        <!-- 隠しのNodeプロパティ -->
+        <input type="hidden" id="node-input-configReady">
     </div>
 
 </script>
@@ -82,7 +90,7 @@
             objectDescription: {value:""},
             // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
             configReady: {value: "", required: true},
-
+            mode: {value: "opStatus"},
             // dataItems property（editableListで使用する。）
             dataItems : {value: [{},]},
         },
@@ -102,37 +110,36 @@
         oneditprepare: function() {
         let node = this;
 
-        const lbldName = node._("editor.dname");
+        const lbldName = node._("editor.dataName");
         const lblunit = node._("editor.unit");
-        const lblGPIO = node._("editor.GPIO");
+        const lblGPIO = node._("editor.GPIO-pin");
 
 
         // editableList item のhtml要素
         // 1行目のデータタイプとデータ名称
         const paraForm1 =`
-            <label style="display:inline-block; width: 100px;">${lblGPIO}</label>
-            <input type="number" required="required" style="display:inline-block; width: 600px;"
-                class="GPIO" min="2" step="1" max="27" value=20>
-            <label style="display:inline-block; width: 100px;">${lbldName}</label>
-            <input type="text" required="required" style="display:inline-block; width: 150px;" class="dName">
-            <input type="text" style="display:inline-block; width: 40px;" placeholder="${lblunit}" class="unit">  
+            <label style="display:inline-block; width: 70px;">${lblGPIO}</label>
+            <input class="gpioNum" type="number" min="2" step="1" max="27" required="required"
+                style="display:inline-block; width: 60px; margin-right:20px;">
+            <label style="display:inline-block; width: 80px;">${lbldName}</label>
+            <input class="dName" type="text" required="required" style="display:inline-block; width: 120px; margin-right:10px;" placeholder="${lbldName}">
         `;
 
         // Tab
         const tabs = RED.tabs.create({
-            id: 'red-tabs',
+            id: 'pi-GPIO-in-tabs',
             onchange(tab) {
-                $('#tabs-content').children().hide();
+                $('#pi-GPIO-in-tabs-content').children().hide();
                 $("#" + tab.id).show();
-                $("#red-tabs").resize();
+                $("#pi-GPIO-in-tabs").resize();
             },
         });
         tabs.addTab({
-            id: 'tab-object-properties',
+            id: 'tab-object-settings',
             label: this._('editor.tab.object-settings'),
         });
         tabs.addTab({
-            id: 'tab-dataItem-properties',
+            id: 'tab-dataItem-settings',
             label: this._('editor.tab.data-settings'),
         });
 
@@ -154,14 +161,12 @@
                 // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
                 if(!dItem.hasOwnProperty("dataName")) {
                     dItem.dataName = "";
-                    dItem.GPIO = 20,
-                    dItem.unit = ""
+                    dItem.gpioNum = "";
                 }
 
                 // set back dataItem properties on row1
-                div1.find(".GPIO").val(dItem.GPIO);
+                div1.find(".gpioNum").val(dItem.gpioNum);
                 div1.find(".dName").val(dItem.dataName);
-                div1.find(".unit").val(dItem.unit);
             },
             // リストの順番が変わったら呼ばれる。
             sortItems: function(items) {
@@ -193,23 +198,19 @@
         let items = $("#node-input-dItemcontainer").editableList('items');
         // データ設定を作成
         node.dataItems = [];
-
+debugger;
         items.each(function(i, elm){
             let item = {
-                item: elm.find(".dataSelect").val(),
+                gpioNum: elm.find(".gpioNum").val(),
                 dataName: elm.find(".dName").val(),
-                unit: elm.find(".unit").val()
             };
             // 必須propertyが揃っているか？
-            if (!item.dataName) configReady = "";
+            if (!item.dataName || !item.gpioNum) configReady = "";
 
             // dataItemをプロパティリストにプッシュ
             node.dataItems.push(item);
         });
-        // objectKeyはある？
-        if (!$("#node-input-objectKey").val()) configReady = "";
-         // contentTypeはある？
-         if (!$("#node-input-contentType").val()) configReady = "";
+
         // データ設定が一つはある？
         if (!node.dataItems[0]) configReady = "";
         // 設定完了フラグをセット
@@ -217,15 +218,14 @@
     },
 
     oneditresize: function (size) {
-        if ($("#tab-dataItem-properties").is(":visible")) {
+        if ($("#tab-dataItem-settings").is(":visible")) {
             // エディタがリサイズされたら
             let height = size.height;
 
             // Tab以外の部分の高さを引く
-            height -= $("#com-block").outerHeight(true);
             height -= $("#name-block").outerHeight(true);
             // dataItemプロパティTab内の、editableList以外の行の高さを引く
-            let rows = $("#tab-dataItem-properties>div:not(.node-input-dItemcontainer-row)");
+            let rows = $("#tab-dataItem-settings>div:not(.node-input-dItemcontainer-row)");
             for (let i=0; i<rows.length; i++) {
                 height -= $(rows[i]).outerHeight(true);
             }
@@ -233,7 +233,7 @@
             height -= 80;
 
             // editableListのマージンを引く
-            const editorRow = $("#tab-dataItem-properties>div.node-input-dItemcontainer-row");
+            const editorRow = $("#tab-dataItem-settings>div.node-input-dItemcontainer-row");
             height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
             
             // editableListの高さを設定。editableListが非表示の時は正しく動作しない。

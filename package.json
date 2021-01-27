@@ -31,7 +31,9 @@
       "GPi-DHT-sensor": "grovepi-nodes/GPi-DHT-sensor.js",
       "GPi-LED": "grovepi-nodes/GPi-LED.js",
       "grovepi": "grovepi-nodes/grovepi.js",
-      "pi-cpu": "pi-nodes/pi-cpu.js"
+      "pi-cpu": "pi-nodes/pi-cpu.js",
+      "pi-GPIO-in": "pi-nodes/pi-GPIO-in.js",
+      "pi-GPIO-out": "pi-nodes/pi-GPIO-out.js"
     }
   },
   "repository": {
