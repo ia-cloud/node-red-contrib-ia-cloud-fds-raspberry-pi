@@ -10,7 +10,8 @@
   "dependencies": {
     "@ia-cloud/node-grovepi": "^2.2.1",
     "dateformat": "^3.0.3",
-    "moment": "^2.27.0"
+    "moment": "^2.27.0",
+    "rpi-gpio": "^2.1.7"
   },
   "devDependencies": {
     "eslint": "^6.5.0",
