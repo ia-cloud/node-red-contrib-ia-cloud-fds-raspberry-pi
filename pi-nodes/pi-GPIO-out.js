@@ -53,7 +53,7 @@ module.exports = function(RED) {
         });
         this.on("close", function(done) {
             // reset GPIO config
-            gpio.destroy(function(){done()});
+            gpio.destroy(done);
         });
     };
 

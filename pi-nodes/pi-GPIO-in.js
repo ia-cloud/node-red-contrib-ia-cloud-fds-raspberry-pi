@@ -19,7 +19,6 @@ module.exports = function(RED) {
         let GPIOValue = [];
         GPIOValue.length = NUM_OF_GPIO_PIN;
 
-        const PRESENT_VALUE_TEXT = RED._("runtime.value");
         const ERROR_TEXT = RED._("runtime.error");
         const SENT_TEXT = RED._("runtime.sent");
         const WAITING_TEXT = RED._("runtime.waiting");
@@ -36,20 +35,20 @@ module.exports = function(RED) {
             }
             GPIOValue[channel] = value;
         });
+        // make node status waiting
+        node.status({fill:"green", shape:"dot", text:WAITING_TEXT});
+
         // set GPIO pins up
-        let error = false;
         for (let param of params) {
 
             gpio.setup(param.gpioNum, gpio.DIR_IN, gpio.EDGE_BOTH, function (err){
                 gpio.read(param.gpioNum, function (err, value){
+
                     if (!err) GPIOValue[param.gpioNum] = value;
-                    else error = true;
+                    else node.status({fill:"yellow", shape:"ring", text:ERROR_TEXT});
                 });
             });
         }
-
-        if (!error) node.status({fill:"green", shape:"dot", text:WAITING_TEXT});
-        else node.status({fill:"yellow", shape:"ring", text:ERROR_TEXT});
     
         // 定期収集のためのカウンターをセット
         let storeInterval = parseInt(config.storeInterval);
@@ -82,8 +81,9 @@ module.exports = function(RED) {
             clearInterval(this.watchId);
             // stop cyclic ia-cloud object store
             clearInterval(this.intervalId);
-            // just in case
-            setTimeout(done, 300);
+
+            // reset GPIO config
+            gpio.destroy(done);
         });
 
         // ia-cloudオブジェクトを出力メッセージとして送出する関数

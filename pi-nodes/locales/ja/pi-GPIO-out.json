@@ -3,7 +3,7 @@
         "paletteLabel": "Rpi GPIO出力",
         "name": "ノード名称",
         "GPIONum": "GPIO番号",
-        "notHeaderpin": "コネクタPin番号ではありません。"
+        "notHeaderpin": "ピン番号でなく、GPIO番号で設定。"
     },
     "runtime": {
         "input": "入力",
