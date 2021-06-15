@@ -21,7 +21,7 @@
   "keywords": [
     "node-red"
   ],
-  "license": "ISC",
+  "license": "Apache-2.0",
   "main": "gp2iac/gp2iac.js",
   "node-red": {
     "nodes": {
