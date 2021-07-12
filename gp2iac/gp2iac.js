@@ -57,7 +57,7 @@ module.exports = function(RED) {
                         "objectType" : "iaCloudObject",
                         "objectKey" : objectkey ,
                         "objectDescription" : "センサーの値",
-                        "timeStamp" :  timestamp,
+                        "timestamp" :  timestamp,
                         "ObjectContent" : {
                             "contentType": "iaCloudData",
                             "contentData":[{
@@ -84,7 +84,7 @@ module.exports = function(RED) {
                         "objectType" : "iaCloudObject",
                         "objectKey" : objectkey ,
                         "objectDescription" : "センサーの値",
-                        "timeStamp" :  timestamp,
+                        "timestamp" :  timestamp,
                         "ObjectContent" : {
                             "contentType": "iaCloudData",
                             "contentData":[{
